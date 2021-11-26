@@ -1,0 +1,85 @@
+﻿@model Cochera.ViewModels.HistorialPersonaVM
+
+@{
+    ViewBag.Title = "Generar Reporte";
+}
+
+@using (Ajax.BeginForm("GenerarComprobante", null, new AjaxOptions { HttpMethod = "POST", OnBegin = "onBeginComprobante", OnSuccess = "onSuccessComprobante", OnFailure = "onFailureComprobante" }, new { id = "formComprobante" }))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(x => x.IdPersona)
+
+    <div class="form-horizontal">
+        <h4>Generar reporte</h4>
+        <hr />
+        <div class="form-group">
+            @Html.LabelFor(model => model.Nombre, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Nombre, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                @Html.ValidationMessageFor(model => model.Nombre, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Apellido, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Apellido, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                @Html.ValidationMessageFor(model => model.Apellido, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Patente, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Patente, new { htmlAttributes = new { @class = "form-control", @disabled = "disabled" } })
+                @Html.ValidationMessageFor(model => model.Patente, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Pago, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Pago, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Pago, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Observaciones, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Observaciones, new { @class = "form-control", @cols = "50", @rows = "4" })
+                @Html.ValidationMessageFor(model => model.Observaciones, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Generar" class="btn btn-secondary btnComprobante" />
+            </div>
+        </div>
+    </div>
+}
+
+<div>
+    @Html.ActionLink("Volver", "Index")
+</div>
+
+@section Scripts {
+    <script>
+
+        function onBeginComprobante() {
+            $(".btnComprobante").attr("disabled", "disabled");
+        }
+
+        function onSuccessComprobante(response) {
+            //Habilito el botón
+            $(".btnComprobante").removeAttr("disabled");
+            //Imprimo ticket salida
+            window.open("../ImprimirComprobante/" + response, '_blank');
+            //Redirecciono al index
+            window.open("../Index", '_self');
+        }
+
+        function onFailureComprobante() {
+            //Actualizo la página por cualquier problema que haya podido haber
+            location.reload();
+        }
+
+    </script>
+}

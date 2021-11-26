@@ -1,0 +1,45 @@
+﻿<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <style>     
+
+        section {
+          position:relative;
+          display:block;
+          padding:15px;
+          margin:0 auto;
+          max-width:1600px;
+          text-align:center;
+          height:calc(100vh - 60px);
+        }
+  
+        section #content {
+          position:absolute;
+          display:block;
+          width:calc(100% - 30px); height:auto;
+          top:50%;
+          transform:translateY(-50%);
+        }
+  
+        .type {
+          display:inline-block;
+          font-size:16px; line-height:1;
+          text-transform:uppercase;
+          font-weight:600;
+          letter-spacing:0.1em;
+          color:#ccc;
+          margin-bottom:30px
+        }
+    </style>
+</head>
+<body>
+    <main>
+        <section>
+            <div id="content">
+                <h1 style="color: red;">ERROR 401</h1>
+                <p class="type">Para acceder tenés que ser administrador.</p>
+            </div>
+        </section>
+    </main>
+</body>
+</html>

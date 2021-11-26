@@ -1,0 +1,35 @@
+﻿@model Cochera.Models.HistorialEstacionamiento
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    @Styles.Render("~/Content/css")
+    <style>
+      .texto {
+        font-family: Arial;
+        font-weight: bold;
+      }
+    </style>
+    <title>Ticket entrada</title>
+</head>
+<body>
+    <p class="texto">GARAGE DONADO 260</p>
+    <p class="texto">TICKET SALIDA</p>
+    <h5 class="texto"><span class="texto">PATENTE:</span> @Model.Estacionamiento.Patente.ToUpper()</h5>
+    <p class="texto"><span class="texto">VEHÍCULO:</span> @Model.Estacionamiento.TipoVehiculo.Descripcion.ToUpper()</p>
+    <span class="texto">INGRESO:</span>
+    <p class="texto">@Model.Estacionamiento.Entrada</p>
+    <span class="texto">SALIDA:</span>
+    <p class="texto">@Model.Salida</p>
+    <span class="texto">TIEMPO:</span>
+    <p class="texto">@Model.Observaciones</p>
+    <h5 class="texto">IMPORTE: $@Model.Importe</h5>
+    <p class="texto">Gracias!</p>
+    <br>
+</body>
+</html>

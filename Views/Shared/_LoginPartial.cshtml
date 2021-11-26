@@ -1,0 +1,14 @@
+﻿@using Microsoft.AspNet.Identity
+
+@if (Request.IsAuthenticated) { 
+    <ul class="navbar-nav mr-right">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Hola @User.Identity.GetUserName()
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                @Html.ActionLink("Cerrar sesión", "CerrarSesion", "Home", null, new { @class = "dropdown-item" })
+            </div>
+        </li>
+    </ul>
+}

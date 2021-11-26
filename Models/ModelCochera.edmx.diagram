@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="6c82e1a434644472a55f0ae1d0c3d704" Name="Diagram1">
+        <EntityTypeShape EntityType="CocheraModel.Estacionamiento" Width="1.5" PointX="3" PointY="1" />
+        <EntityTypeShape EntityType="CocheraModel.HistorialEstacionamiento" Width="1.5" PointX="5.25" PointY="1" />
+        <EntityTypeShape EntityType="CocheraModel.HistorialPersona" Width="1.5" PointX="8" PointY="5.125" />
+        <EntityTypeShape EntityType="CocheraModel.Perfil" Width="1.5" PointX="0.75" PointY="8.5" />
+        <EntityTypeShape EntityType="CocheraModel.Persona" Width="1.5" PointX="5.75" PointY="5" />
+        <EntityTypeShape EntityType="CocheraModel.TipoEstadia" Width="1.5" PointX="0.75" PointY="5.375" />
+        <EntityTypeShape EntityType="CocheraModel.TipoVehiculo" Width="1.5" PointX="0.75" PointY="1.25" />
+        <EntityTypeShape EntityType="CocheraModel.Usuario" Width="1.5" PointX="3" PointY="8.125" />
+        <AssociationConnector Association="CocheraModel.FK_Estacionamiento_TipoEstadia" />
+        <AssociationConnector Association="CocheraModel.FK_Estacionamiento_TipoVehiculo" />
+        <AssociationConnector Association="CocheraModel.FK_HistorialEstacionamiento_Estacionamiento" />
+        <AssociationConnector Association="CocheraModel.FK_HistorialEstacionamiento_Usuario" />
+        <AssociationConnector Association="CocheraModel.FK_HistorialPersona_Persona" />
+        <AssociationConnector Association="CocheraModel.FK_Usuario_Perfil" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

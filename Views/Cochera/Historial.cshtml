@@ -1,0 +1,169 @@
+﻿@model IEnumerable<Cochera.Models.HistorialEstacionamiento>
+
+<h2>Historial</h2>
+<p><small class="text-muted">El filtro utiliza la fecha de entrada del vehiculo.</small></p>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    @Html.Hidden("estadia")
+    @Html.Hidden("user")
+    <div class="form-row">
+        <div class="form-group col-md-2">
+            @Html.Label("Desde")
+            @Html.TextBox("FechaDesde", null, new { @class = "form-control datepicker", @type = "text", @readonly = "readonly" })
+        </div>
+        <div class="form-group col-md-2">
+            @Html.Label("Hasta")
+            @Html.TextBox("FechaHasta", null, new { @class = "form-control datepicker", @type = "text", @readonly = "readonly" })
+        </div>
+        <div class="form-group col-md-2">
+            @Html.Label("Estadia")
+            @Html.DropDownList("TipoEstadia", null, htmlAttributes: new { @class = "form-control" })
+        </div>
+        <div class="form-group col-md-2">
+            @Html.Label("Usuario")
+            @Html.DropDownList("Usuario", null, htmlAttributes: new { @class = "form-control" })
+        </div>
+        <div class="form-group col-md-2 flexColumnReverse">
+            <button type="submit" class="btn btn-block btn-info" id="btnFiltrar">Filtrar</button>
+        </div>
+        <div class="form-group col-md-2 flexColumnReverse">
+            <button type="button" class="btn btn-block btn-dark" id="btnImprimir">Imprimir</button>
+        </div>
+    </div>
+}
+
+<div class="container-fluid">
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Estacionamiento.Patente)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Estacionamiento.Entrada)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Salida)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Importe)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Usuario)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Observaciones)
+            </th>
+            <th>
+                @Html.DisplayName("Estadia")
+            </th>
+            <th>
+                @Html.DisplayName("Vehiculo")
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Estacionamiento.Patente)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Estacionamiento.Entrada)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Salida)
+                </td>
+                <td>
+                    $@Html.DisplayFor(modelItem => item.Importe)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Usuario.User)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Observaciones)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Estacionamiento.TipoEstadia.Descripcion)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Estacionamiento.TipoVehiculo.Descripcion)
+                </td>
+                <td>
+                    <a onclick="imprimirTicketSalida(@item.Id)" class="ml-3 align-self-center pointer"><i class="fa fa-print" style="font-size: 24px; color: #17a2b8;" title="Imprimir"></i></a>
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        $(function () {
+            $('.datepicker').datepicker({
+                format: 'dd/mm/yyyy',
+                language: 'es',
+                autoclose: true,
+                orientation: 'bottom',
+                clearBtn: 'true'
+                //daysOfWeekDisabled: [0,2,3,4,5,6]
+            }).on('changeDate', function (e) {
+                //se selecciona otra fecha
+            }).on('clearDate', function (e) {
+                //el input se limpia
+            });
+
+            $('#btnFiltrar').click(function () {
+                //Seteo estadia
+                $("input[type=hidden]#estadia").val($("#TipoEstadia option:selected").val());
+                //Seteo user
+                $("input[type=hidden]#user").val($("#Usuario option:selected").val());
+                //Submiteo el form
+                $('form').submit();
+            });
+
+            $("#btnImprimir").click(function () {
+                var fechaDesde = $("#FechaDesde").val();
+                var fechaHasta = $("#FechaHasta").val();
+                var estadia = $("#TipoEstadia option:selected").val();
+                var usuario = $("#Usuario option:selected").val();
+                var queryString = `?fechaDesde=${fechaDesde}&fechaHasta=${fechaHasta}&estadia=${estadia}&user=${usuario}`;
+                window.open("../Cochera/ImprimirHistorial/" + queryString, '_blank');
+            });
+        });
+
+        function imprimirTicketSalida(id) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ImprimirTicketSalida", "Cochera")",
+                data: { id: id },
+            dataType: "html",
+            traditional: true,
+            success: function (response) {
+                Imprimir(response);
+            },
+            error: function (xhr) {
+                //Ocurrio un error
+            }
+        });
+        }
+
+        function Imprimir(html) {
+            var mywindow = window.open('', 'PRINT', 'height=1,width=1');
+
+            mywindow.document.write('<html><body>');
+            mywindow.document.write(html);
+            mywindow.document.write('</body></html>');
+
+            mywindow.document.close(); // necessary for IE >= 10
+            mywindow.focus(); // necessary for IE >= 10*/
+
+            mywindow.print();
+            mywindow.close();
+        }
+    </script>
+}

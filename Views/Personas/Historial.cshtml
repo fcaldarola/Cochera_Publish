@@ -1,0 +1,57 @@
+﻿@model IEnumerable<Cochera.Models.HistorialPersona>
+
+<h2>Historial</h2>
+
+<div class="container-fluid">
+    <table class="table">
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Persona.Nombre)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Persona.Apellido)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Persona.Patente)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Pago)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Fecha)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Observaciones)
+            </th>
+            <th></th>
+        </tr>
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Persona.Nombre)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Persona.Apellido)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Persona.Patente)
+                </td>
+                <td>
+                    $@Html.DisplayFor(modelItem => item.Pago)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Fecha)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Observaciones)
+                </td>
+                <td>
+                    <a href="~/Personas/ImprimirComprobante/@item.Id" target="_blank" class="ml-3 align-self-center"><i class="fa fa-print" style="font-size: 24px; color: #17a2b8;" title="Imprimir"></i></a>
+                </td>
+            </tr>
+        }
+
+    </table>
+</div>

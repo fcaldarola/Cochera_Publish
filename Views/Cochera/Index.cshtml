@@ -1,0 +1,282 @@
+﻿@model Cochera.Models.Estacionamiento
+
+@{ 
+    var minminimo = ViewBag.MinutosMinimos;
+    var minmedio = ViewBag.MinutosMedios;
+    var minextra = ViewBag.MinutosExtras;
+    var cosminimoauto = ViewBag.CostoMinimoAuto;
+    var cosmedioauto = ViewBag.CostoMedioAuto;
+    var cosextraauto = ViewBag.CostoExtraAuto;
+    var cosminimomoto = ViewBag.CostoMinimoMoto ;
+    var cosmediomoto = ViewBag.CostoMedioMoto ;
+    var cosextramoto = ViewBag.CostoExtraMoto;
+}
+
+<div class="pb-2 mt-4 mb-2 border-bottom">
+    <h3>Estacionamiento</h3>
+    <div class="alert alert-info text-center" role="alert">
+        <span><strong>Auto: </strong>Los primeros @minminimo minutos el importe es $@cosminimoauto. A los @minmedio minutos el importe es $@cosmedioauto y luego cada @minextra minutos el importe extra es de $@cosextraauto.<br /></span>
+        <span><strong>Moto: </strong>Los primeros @minminimo minutos el importe es $@cosminimomoto. A los @minmedio minutos el importe es $@cosmediomoto y luego cada @minextra minutos el importe extra es de $@cosextramoto.</span>
+    </div>
+    <span id="cantidadVehiculos" class="text-muted"></span>
+    </div>
+
+@using (Ajax.BeginForm("IngresoVehiculo", null, new AjaxOptions { HttpMethod = "GET", InsertionMode = InsertionMode.Replace, UpdateTargetId = "vpListadoVehiculos", OnBegin = "onBeginIngreso", OnSuccess = "onSuccessIngreso", OnFailure = "onFailureIngreso" }, new { id = "formIngresoVechiculo" }))
+{
+    @Html.Hidden("TipoVehiculo")
+    @Html.Hidden("TipoEstadia")
+    <div class="form-row">
+        <div class="form-group col-md-3">
+            @Html.Label("Patente")
+            @Html.TextBoxFor(x => x.Patente, null, new { @class = "form-control", @placeholder = "Ingresar patente", @autocomplete = "off" })
+            @Html.ValidationMessageFor(model => model.Patente, "", new { @class = "text-danger" })
+        </div>
+        <div class="form-group col-md-2">
+            @Html.Label("Vehiculo")
+            @Html.DropDownList("Tipo_Vehiculo", null, htmlAttributes: new { @class = "form-control" })
+        </div>
+        <div class="form-group col-md-3">
+            @Html.Label("Estadia")
+            @Html.DropDownList("Tipo_Estadia", null, htmlAttributes: new { @class = "form-control" })
+        </div>
+
+        <div class="form-group col-md-2 flexColumnReverse">
+            <button type="submit" class="btn btn-block btn-info" id="btnIngresar">Ingresar</button>
+        </div>
+        <div class="form-group col-md-2 flexColumnReverse" id="spinner">
+            <div class="spinner-grow text-dark invisible" role="status">
+            </div>
+        </div>
+    </div>
+}
+
+@using (Ajax.BeginForm("FinalizarEstacionamiento", null, new AjaxOptions { HttpMethod = "GET", OnBegin = "onBeginFinalizar", OnSuccess = "onSuccessFinalizar", OnFailure = "onFailureFinalizar" }, new { id = "formFinalizar" }))
+{
+    <div id="vpListadoVehiculos">
+        @Html.Action("ListadoVehiculos")
+    </div>
+}
+
+<div class="modal fade" id="modalImporte" tabindex="-1" aria-labelledby="modalImporteLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalImporteLabel">Finalización de estacionamiento</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center" style="padding: 30px; background: #d1ecf1;">
+                <h1>El importe a pagar es $<span id="importe"></span></h1>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script type="text/javascript">
+
+        $(function () {
+            calcularCantidadVehiculos();
+        });
+
+        $("#btnIngresar").click(function () {
+            var tipoVechiculo = $("#Tipo_Vehiculo").val();
+            $("input[type=hidden]#TipoVehiculo").val(tipoVechiculo);
+
+            var tipoEstadia = $("#Tipo_Estadia").val();
+            $("input[type=hidden]#TipoEstadia").val(tipoEstadia);
+        });
+
+        function onBeginIngreso() {
+            $("#btnIngresar").attr("disabled", "disabled");
+            $(".spinner-grow").removeClass("invisible");
+        }
+
+        function onSuccessIngreso(response) {
+            //Quitamos icono y habilitamos botón
+            $(".spinner-grow").addClass("invisible");
+            $("#btnIngresar").removeAttr("disabled");
+            //Limpio campo patente
+            $("#Patente").val("");
+            $("#Patente").focus();
+            $("#Tipo_Vehiculo").val(1);
+            $("#Tipo_Estadia").val(1);
+            //Actualizo tabla y mensaje de arriba
+            actualizarVpListadoEstacionamientoEntrada(response);
+        }
+
+        function onFailureIngreso() {
+            //Actualizo la página por cualquier problema que haya podido haber
+            location.reload();
+        }
+
+        function actualizarVpListadoEstacionamientoEntrada(id) {
+            var promesa = new Promise((resolve, reject) => {
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("ListadoVehiculos", "Cochera")",
+                    dataType: "html",
+                    traditional: true,
+                    success: function (response) {
+                        $('#vpListadoVehiculos').empty();
+                        $('#vpListadoVehiculos').html(response);
+                        //Si no completo esto, no se ejecuta el .then
+                        resolve("Puedo calcular la cantidad de vehiculos");
+                    },
+                    error: function (xhr) {
+                        //Ocurrio un error
+                    }
+                });
+            });
+            //Si promesa se ejecutó calculo la cantidad de vehiculos
+            promesa.then(() => {
+                calcularCantidadVehiculos();
+                imprimirTicketEntrada(id);
+            })
+        }
+
+        function imprimirTicketEntrada(id) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ImprimirTicketEntrada", "Cochera")",
+                data: { id: id },
+                dataType: "html",
+                traditional: true,
+                success: function (response) {
+                    Imprimir(response);
+                },
+                error: function (xhr) {
+                    //Ocurrio un error
+                }
+            });
+        }
+
+        function bindBtnFinalizar() {
+            $(".btnFinalizar").off("click");
+            $(".btnFinalizar").on("click", function () {
+                var idVehiculo = $(this).attr("id");
+                $("input[type=hidden]#idVehiculo").val(idVehiculo);
+            });
+        }
+
+        $(".btnFinalizar").click(function () {
+            var idVehiculo = $(this).attr("id");
+            $("input[type=hidden]#idVehiculo").val(idVehiculo);
+        });
+
+        function onBeginFinalizar() {
+            $(".btnFinalizar").attr("disabled", "disabled");
+            $(".spinner-grow").removeClass("invisible");
+        }
+
+        function onSuccessFinalizar(response) {
+            //Quitamos icono y habilitamos botón
+            $(".spinner-grow").addClass("invisible");
+            $(".btnFinalizar").removeAttr("disabled");
+            //Actualizo tabla y mensaje de arriba
+            actualizarVpListadoEstacionamientoSalida(response);
+        }
+
+        function onFailureFinalizar() {
+            //Actualizo la página por cualquier problema que haya podido haber
+            location.reload();
+        }
+
+        function actualizarVpListadoEstacionamientoSalida(id) {
+            var promesa = new Promise((resolve, reject) => {
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("ListadoVehiculos", "Cochera")",
+                    dataType: "html",
+                    traditional: true,
+                    success: function (response) {
+                        $('#vpListadoVehiculos').empty();
+                        $('#vpListadoVehiculos').html(response);
+                        //Si no completo esto, no se ejecuta el .then
+                        resolve("Puedo calcular la cantidad de vehiculos");
+                    },
+                    error: function (xhr) {
+                        //Ocurrio un error
+                    }
+                });
+            });
+            //Si promesa se ejecutó calculo la cantidad de vehiculos
+            promesa.then(() => {
+                calcularCantidadVehiculos();
+                popUpImporte(id);
+                imprimirTicketSalida(id);
+            })
+        }
+
+        function calcularCantidadVehiculos() {
+            var cantidadVehiculos = $("#vpListadoVehiculos").find("table tbody tr").length;
+            if (cantidadVehiculos == 0)
+                $("#cantidadVehiculos").text("No hay ningún vehiculo estacionado. Eramos tan pobres...");
+            else {
+                if (cantidadVehiculos == 1) {
+                    $("#cantidadVehiculos").text(`Actualmente hay ${cantidadVehiculos} vehiculo estacionado.`);
+                }
+                else {
+                    $("#cantidadVehiculos").text(`Actualmente hay ${cantidadVehiculos} vehiculos estacionados.`);
+                }
+            }
+        }
+
+        function popUpImporte(id) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("PopUpImporte", "Cochera")",
+                data: { id: id },
+                dataType: "json",
+                traditional: true,
+                success: function (response) {
+                    $("#importe").text(response);
+                    $("#modalImporte").modal('show');
+                    //A los 5 segundos se cierra solo
+                    setTimeout(function () {
+                        $("#modalImporte").modal('hide')
+                    }, 5000);
+                },
+                error: function (xhr) {
+                    //Ocurrio un error
+                }
+            });
+        }
+
+        function imprimirTicketSalida(id) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ImprimirTicketSalida", "Cochera")",
+                data: { id: id },
+                dataType: "html",
+                traditional: true,
+                success: function (response) {
+                    Imprimir(response);
+                },
+                error: function (xhr) {
+                    //Ocurrio un error
+                }
+            });
+        }
+
+        function Imprimir(html) {
+            var mywindow = window.open('', 'PRINT', 'height=1,width=1');
+
+            mywindow.document.write('<html><body>');
+            mywindow.document.write(html);
+            mywindow.document.write('</body></html>');
+
+            mywindow.document.close(); // necessary for IE >= 10
+            mywindow.focus(); // necessary for IE >= 10*/
+
+            //Seteo el tiempo asi alcanza a renderizar el html antes de imprimirlo (Chrome)
+            setTimeout(function () {
+                mywindow.print();
+                mywindow.close();
+            }, 1000);
+        }
+    </script>
+}
+

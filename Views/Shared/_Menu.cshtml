@@ -1,0 +1,40 @@
+﻿@using Microsoft.AspNet.Identity
+
+@{ 
+    var esAdministrador = User.IsInRole("Administrador");
+}
+
+@if (Request.IsAuthenticated )
+{
+    <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+            @Html.ActionLink("Cochera", "Index", "Cochera", null, new { @class = "nav-link" })
+        </li>
+        <li class="nav-item">
+            @Html.ActionLink("Historial", "Historial", "Cochera", null, new { @class = "nav-link" })
+        </li>
+        @if (esAdministrador)
+        {
+            <li class="nav-item">
+                @Html.ActionLink("Estadias fijas", "Index", "Personas", null, new { @class = "nav-link" })
+            </li>
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle active" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    Modificar datos
+                </a>
+                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                    @Html.ActionLink("Vechiculos", "Index", "TipoVehiculos", null, new { @class = "dropdown-item" })
+                    <div class="dropdown-divider"></div>
+                    @Html.ActionLink("Estadias", "Index", "TipoEstadias", null, new { @class = "dropdown-item" })
+                    <div class="dropdown-divider"></div>
+                    @Html.ActionLink("Usuarios", "Index", "Usuarios", null, new { @class = "dropdown-item" })
+                </div>
+            </li>
+        }
+    </ul>
+}
+else
+{
+    <ul class="navbar-nav mr-auto"></ul>
+}
+

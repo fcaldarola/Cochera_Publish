@@ -1,0 +1,41 @@
+﻿@model IEnumerable<Cochera.Models.TipoEstadia>
+
+@{
+    ViewBag.Title = "Estadia";
+}
+
+<h2>Tipo Estadias</h2>
+
+<p>
+    @Html.ActionLink("Crear tipo estadia", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Descripcion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Costo)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    //El id = 1 es la estadia por hora
+    if (item.Id != 1) { 
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Descripcion)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Costo)
+            </td>
+            <td>
+                @Html.ActionLink("Editar", "Edit", new { id=item.Id }) |
+                @Html.ActionLink("Eliminar", "Delete", new { id=item.Id })
+            </td>
+        </tr>
+    }
+}
+
+</table>

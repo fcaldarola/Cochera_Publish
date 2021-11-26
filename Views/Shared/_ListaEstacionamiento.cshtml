@@ -1,0 +1,48 @@
+﻿@model List<Cochera.Models.Estacionamiento>
+
+@{
+    bool esAjax = Request.IsAjaxRequest();
+}
+
+
+@if (Model.Count != 0)
+{
+    <table class="table" id="listadoAsistencias">
+        <thead>
+            <tr>
+                <th scope="col">Patente</th>
+                <th scope="col">Entrada</th>
+                <th scope="col">Vehiculo</th>
+                <th scope="col">Estadia</th>
+                <th scope="col">Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="tbody">
+            @foreach (var item in Model)
+            {
+                @Html.Hidden("idVehiculo")
+                <tr>
+                    <td>@item.Patente</td>
+                    <td>@item.Entrada</td>
+                    <td>@item.TipoVehiculo.Descripcion</td>
+                    <td>@item.TipoEstadia.Descripcion</td>
+                    <td class="d-flex"><button type="submit" id="@item.Id" class="btn btn-dark btnFinalizar">Finalizar</button> <a onclick="imprimirTicketEntrada(@item.Id)" class="ml-3 align-self-center pointer"><i class="fa fa-print" style="font-size: 24px; color: #17a2b8;" title="Imprimir"></i></a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-primary text-center" role="alert">
+        No hay ningún vehiculo estacionado
+    </div>
+}
+
+@if (esAjax)
+{
+    <script type="text/javascript">
+        //Bindeo boton finalizar
+        bindBtnFinalizar();
+    </script>
+}

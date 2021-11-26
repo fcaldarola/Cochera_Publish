@@ -1,0 +1,35 @@
+﻿@model Cochera.ViewModels.HistorialPersonaVM
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    @Styles.Render("~/Content/css")
+    <title>Comprobante de pago</title>
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <h1 class="text-center font-weight-bold">GARAGE DONADO 260</h1>
+            <h3 class="text-center mb-5">COMPROBANTE DE PAGO</h3>
+            <hr />
+            <h3 class="mt-5"><span class="font-weight-bold">Nombre:</span> @Model.Nombre</h3>
+            <h3><span class="font-weight-bold">Apellido:</span> @Model.Apellido</h3>
+            <h3><span class="font-weight-bold">Patente:</span> @Model.Patente.ToUpper()</h3>
+            <h3><span class="font-weight-bold">Fecha:</span> @Model.Fecha</h3>
+            <h3><span class="font-weight-bold">Pago:</span> $@Model.Pago</h3>
+            <h3  class="mb-5"><span class="font-weight-bold">Observaciones:</span> @Model.Observaciones</h3>
+            <hr />
+            <h4 class="mt-5"><span class="font-weight-bold">HORARIO DE ATENCIÓN</span></h4>
+            <h4>LUNES A VIERNES DE 8 A 20HS. SÁBADO DE 8:30 A 13HS.</h4>
+        </div>
+    </div>
+</body>
+</html>
+
+

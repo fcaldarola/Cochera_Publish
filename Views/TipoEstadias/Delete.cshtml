@@ -1,0 +1,37 @@
+﻿@model Cochera.Models.TipoEstadia
+
+@{
+    ViewBag.Title = "Eliminar";
+}
+
+<div>
+    <h4>¿Estás seguro que querés eliminarlo?</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Descripcion)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Descripcion)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Costo)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Costo)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Eliminar" class="btn btn-secondary" /> |
+            @Html.ActionLink("Volver", "Index")
+        </div>
+    }
+</div>

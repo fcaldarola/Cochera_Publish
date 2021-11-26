@@ -1,0 +1,1403 @@
+USE [master]
+GO
+/****** Object:  Database [Cochera]    Script Date: 21/06/2021 20:53 ******/
+CREATE DATABASE [Cochera]
+ CONTAINMENT = NONE
+ ON  PRIMARY 
+( NAME = N'Cochera', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL12.MSSQLSERVER\MSSQL\DATA\Cochera.mdf' , SIZE = 4288KB , MAXSIZE = UNLIMITED, FILEGROWTH = 1024KB )
+ LOG ON 
+( NAME = N'Cochera_log', FILENAME = N'C:\Program Files\Microsoft SQL Server\MSSQL12.MSSQLSERVER\MSSQL\DATA\Cochera_log.ldf' , SIZE = 1088KB , MAXSIZE = 2048GB , FILEGROWTH = 10%)
+GO
+ALTER DATABASE [Cochera] SET COMPATIBILITY_LEVEL = 120
+GO
+IF (1 = FULLTEXTSERVICEPROPERTY('IsFullTextInstalled'))
+begin
+EXEC [Cochera].[dbo].[sp_fulltext_database] @action = 'enable'
+end
+GO
+ALTER DATABASE [Cochera] SET ANSI_NULL_DEFAULT OFF 
+GO
+ALTER DATABASE [Cochera] SET ANSI_NULLS OFF 
+GO
+ALTER DATABASE [Cochera] SET ANSI_PADDING OFF 
+GO
+ALTER DATABASE [Cochera] SET ANSI_WARNINGS OFF 
+GO
+ALTER DATABASE [Cochera] SET ARITHABORT OFF 
+GO
+ALTER DATABASE [Cochera] SET AUTO_CLOSE ON 
+GO
+ALTER DATABASE [Cochera] SET AUTO_SHRINK OFF 
+GO
+ALTER DATABASE [Cochera] SET AUTO_UPDATE_STATISTICS ON 
+GO
+ALTER DATABASE [Cochera] SET CURSOR_CLOSE_ON_COMMIT OFF 
+GO
+ALTER DATABASE [Cochera] SET CURSOR_DEFAULT  GLOBAL 
+GO
+ALTER DATABASE [Cochera] SET CONCAT_NULL_YIELDS_NULL OFF 
+GO
+ALTER DATABASE [Cochera] SET NUMERIC_ROUNDABORT OFF 
+GO
+ALTER DATABASE [Cochera] SET QUOTED_IDENTIFIER OFF 
+GO
+ALTER DATABASE [Cochera] SET RECURSIVE_TRIGGERS OFF 
+GO
+ALTER DATABASE [Cochera] SET  DISABLE_BROKER 
+GO
+ALTER DATABASE [Cochera] SET AUTO_UPDATE_STATISTICS_ASYNC OFF 
+GO
+ALTER DATABASE [Cochera] SET DATE_CORRELATION_OPTIMIZATION OFF 
+GO
+ALTER DATABASE [Cochera] SET TRUSTWORTHY OFF 
+GO
+ALTER DATABASE [Cochera] SET ALLOW_SNAPSHOT_ISOLATION OFF 
+GO
+ALTER DATABASE [Cochera] SET PARAMETERIZATION SIMPLE 
+GO
+ALTER DATABASE [Cochera] SET READ_COMMITTED_SNAPSHOT OFF 
+GO
+ALTER DATABASE [Cochera] SET HONOR_BROKER_PRIORITY OFF 
+GO
+ALTER DATABASE [Cochera] SET RECOVERY SIMPLE 
+GO
+ALTER DATABASE [Cochera] SET  MULTI_USER 
+GO
+ALTER DATABASE [Cochera] SET PAGE_VERIFY CHECKSUM  
+GO
+ALTER DATABASE [Cochera] SET DB_CHAINING OFF 
+GO
+ALTER DATABASE [Cochera] SET FILESTREAM( NON_TRANSACTED_ACCESS = OFF ) 
+GO
+ALTER DATABASE [Cochera] SET TARGET_RECOVERY_TIME = 0 SECONDS 
+GO
+ALTER DATABASE [Cochera] SET DELAYED_DURABILITY = DISABLED 
+GO
+USE [Cochera]
+GO
+/****** Object:  User [fcaldarola]    Script Date: 21/06/2021 20:53 ******/
+CREATE USER [fcaldarola] FOR LOGIN [fcaldarola] WITH DEFAULT_SCHEMA=[dbo]
+GO
+/****** Object:  Table [dbo].[Estacionamiento]    Script Date: 21/06/2021 20:53 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[Estacionamiento](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Patente] [varchar](10) NOT NULL,
+	[Entrada] [smalldatetime] NOT NULL,
+	[TipoVehiculo_Id] [int] NOT NULL,
+	[TipoEstadia_Id] [int] NOT NULL,
+	[Finalizado] [bit] NOT NULL,
+ CONSTRAINT [PK_Estacionamiento] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[HistorialEstacionamiento]    Script Date: 21/06/2021 20:53 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[HistorialEstacionamiento](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Salida] [smalldatetime] NOT NULL,
+	[Importe] [int] NOT NULL,
+	[Observaciones] [varchar](100) NOT NULL,
+	[Usuario_Id] [int] NOT NULL,
+	[Estacionamiento_Id] [int] NOT NULL,
+ CONSTRAINT [PK_Historial] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[HistorialPersona]    Script Date: 21/06/2021 20:53 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[HistorialPersona](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Fecha] [smalldatetime] NOT NULL,
+	[Pago] [int] NOT NULL,
+	[Observaciones] [varchar](500) NULL,
+	[Persona_Id] [int] NOT NULL,
+ CONSTRAINT [PK_HistorialPersona] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[Perfil]    Script Date: 21/06/2021 20:53 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[Perfil](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Descripcion] [varchar](100) NOT NULL,
+ CONSTRAINT [PK_Perfil] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[Persona]    Script Date: 21/06/2021 20:53 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[Persona](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Nombre] [varchar](50) NOT NULL,
+	[Apellido] [varchar](50) NOT NULL,
+	[Patente] [varchar](10) NOT NULL,
+	[Costo] [int] NOT NULL,
+	[Habilitado] [bit] NOT NULL,
+ CONSTRAINT [PK_Persona] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[TipoEstadia]    Script Date: 21/06/2021 20:53 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[TipoEstadia](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Descripcion] [varchar](100) NOT NULL,
+	[Costo] [int] NOT NULL,
+	[Habilitado] [bit] NOT NULL,
+ CONSTRAINT [PK_TipoEstadia] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[TipoVehiculo]    Script Date: 21/06/2021 20:53 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[TipoVehiculo](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Descripcion] [varchar](100) NOT NULL,
+	[CostoMinimo] [int] NOT NULL,
+	[CostoMedio] [int] NOT NULL,
+	[CostoExtra] [int] NOT NULL,
+	[Habilitado] [bit] NOT NULL,
+ CONSTRAINT [PK_TipoVehiculo] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET ANSI_PADDING OFF
+GO
+/****** Object:  Table [dbo].[Usuario]    Script Date: 21/06/2021 20:53 ******/
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+SET ANSI_PADDING ON
+GO
+CREATE TABLE [dbo].[Usuario](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[User] [varchar](50) NOT NULL,
+	[Password] [varchar](50) NOT NULL,
+	[Perfil_Id] [int] NOT NULL,
+	[Habilitado] [bit] NOT NULL,
+ CONSTRAINT [PK_Usuario] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+GO
+SET ANSI_PADDING OFF
+GO
+SET IDENTITY_INSERT [dbo].[Estacionamiento] ON 
+
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (89, N'aa 826', CAST(N'2020-01-10 09:11:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (90, N'nmy 809', CAST(N'2020-01-10 10:00:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (91, N'mst 280', CAST(N'2020-01-10 10:44:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (92, N'aa 074', CAST(N'2020-01-10 10:56:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (93, N'nso 858', CAST(N'2020-01-10 11:19:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (94, N'lek 082', CAST(N'2020-01-10 11:21:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (95, N'lrk 270', CAST(N'2020-01-10 11:38:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (96, N'deq 546', CAST(N'2020-01-10 14:40:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (97, N'czl 723', CAST(N'2020-01-10 15:00:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (98, N'lgx 274', CAST(N'2020-01-10 15:02:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (99, N'imr 222', CAST(N'2020-01-10 15:09:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (100, N'aa 956', CAST(N'2020-01-10 15:27:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (101, N'j d433', CAST(N'2020-01-10 18:32:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (102, N'knh 403', CAST(N'2020-02-10 09:53:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (103, N'aa 396', CAST(N'2020-02-10 10:06:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (104, N'ntk 152', CAST(N'2020-02-10 10:11:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (105, N'jpd 784', CAST(N'2020-02-10 10:40:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (106, N'pjg 986', CAST(N'2020-02-10 10:54:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (107, N'ad 678', CAST(N'2020-02-10 10:54:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (108, N'aa 209', CAST(N'2020-02-10 11:01:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (109, N'aa 238', CAST(N'2020-02-10 11:11:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (110, N'ab 816', CAST(N'2020-02-10 11:37:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (111, N'uga 895', CAST(N'2020-02-10 12:04:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (112, N'owf 090', CAST(N'2020-02-10 12:13:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (113, N'mjh 019', CAST(N'2020-02-10 15:13:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (114, N'ad 955', CAST(N'2020-02-10 16:36:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (115, N'972', CAST(N'2020-03-10 11:26:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (116, N'lcf 618', CAST(N'2020-03-10 11:27:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (117, N'ae 304', CAST(N'2020-05-10 08:44:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (118, N'r 664', CAST(N'2020-05-10 09:08:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (119, N'hst 094', CAST(N'2020-05-10 09:41:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (120, N'ntk 152', CAST(N'2020-05-10 09:49:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (121, N'rti 777', CAST(N'2020-05-10 10:07:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (122, N'ad 915', CAST(N'2020-05-10 10:20:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (123, N'dwj 534', CAST(N'2020-05-10 10:50:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (124, N'aaa', CAST(N'2020-05-10 11:26:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (125, N'bbb', CAST(N'2020-05-10 11:27:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (126, N'org 740', CAST(N'2020-05-10 12:25:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (127, N'aas125', CAST(N'2020-05-10 12:47:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (128, N'ad 244', CAST(N'2020-05-10 13:48:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (129, N'rfp 693', CAST(N'2020-05-10 16:36:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (130, N'439', CAST(N'2020-05-10 16:44:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (131, N'ovh 043', CAST(N'2020-05-10 17:15:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (132, N'ovh 473', CAST(N'2020-05-10 17:15:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (133, N'jzs 491', CAST(N'2020-06-10 08:44:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (134, N'w 592', CAST(N'2020-06-10 09:42:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (135, N'imq 664', CAST(N'2020-06-10 10:12:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (136, N'owf 090', CAST(N'2020-06-10 10:23:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (137, N'aa605', CAST(N'2020-06-10 10:27:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (138, N'mmi 196', CAST(N'2020-06-10 10:33:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (139, N'ad 976', CAST(N'2020-06-10 10:58:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (140, N'ab 885', CAST(N'2020-06-10 11:25:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (141, N'hst 094', CAST(N'2020-06-10 11:28:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (142, N'ab 395', CAST(N'2020-06-10 11:31:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (143, N'llh 762', CAST(N'2020-06-10 11:39:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (144, N'nin 258', CAST(N'2020-06-10 12:31:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (145, N'a 110 ', CAST(N'2020-06-10 13:24:00' AS SmallDateTime), 2, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (146, N'nyh 950', CAST(N'2020-06-10 13:46:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (147, N'ab 331', CAST(N'2020-06-10 14:00:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (148, N'440', CAST(N'2020-06-10 15:02:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (149, N'dkf 586', CAST(N'2020-06-10 18:39:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (150, N'ac 995', CAST(N'2020-06-10 19:04:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (151, N'ad 241', CAST(N'2020-07-10 08:20:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (152, N'ad 241', CAST(N'2020-07-10 08:24:00' AS SmallDateTime), 1, 2, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (153, N'ae 304', CAST(N'2020-07-10 08:34:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (154, N'awz 948', CAST(N'2020-07-10 09:49:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (155, N'png 164', CAST(N'2020-07-10 10:18:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (156, N'iaw 810', CAST(N'2020-07-10 11:06:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (157, N'ofc 050', CAST(N'2020-07-10 11:22:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (158, N'hve 840', CAST(N'2020-07-10 11:45:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (159, N'fdz 090', CAST(N'2020-07-10 12:01:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (160, N'fdz 790', CAST(N'2020-07-10 12:02:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (161, N'ad 684', CAST(N'2020-07-10 12:57:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (162, N'lqh234', CAST(N'2020-07-10 13:07:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (163, N'ehh698', CAST(N'2020-07-10 14:08:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (164, N'jdq 321', CAST(N'2020-07-10 15:59:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (165, N'dqc 838', CAST(N'2020-08-10 09:23:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (166, N'dqc 838', CAST(N'2020-08-10 09:24:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (167, N'haw 120', CAST(N'2020-08-10 09:37:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (168, N'ozi 072', CAST(N'2020-08-10 09:53:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (169, N'sby 504', CAST(N'2020-08-10 10:31:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (170, N'ad 292', CAST(N'2020-08-10 11:04:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (171, N'opk 687', CAST(N'2020-08-10 11:55:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (172, N'aa612', CAST(N'2020-08-10 15:36:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (173, N'jwh572', CAST(N'2020-08-10 15:51:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (174, N'ctt 902', CAST(N'2020-08-10 17:28:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (175, N'ekk 363', CAST(N'2020-09-10 08:42:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (176, N'ae 304', CAST(N'2020-09-10 08:49:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (177, N'fuq 141', CAST(N'2020-09-10 09:12:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (178, N'owf 090', CAST(N'2020-09-10 10:15:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (179, N'ad 915', CAST(N'2020-09-10 10:19:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (180, N'owf 090', CAST(N'2020-09-10 11:38:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (181, N'uga 895', CAST(N'2020-09-10 11:48:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (182, N'lpw  790', CAST(N'2020-10-10 11:18:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (183, N'mmw 101', CAST(N'2020-10-10 11:39:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (184, N'jzl 670', CAST(N'2020-10-10 11:58:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (185, N'fas045', CAST(N'2020-11-10 18:14:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (186, N'fas045', CAST(N'2020-11-10 18:18:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (187, N'qwe123', CAST(N'2020-11-10 18:41:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (188, N'aa 123', CAST(N'2020-11-10 18:42:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (189, N'as 123', CAST(N'2020-11-10 18:43:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (190, N'asd123', CAST(N'2020-11-10 19:00:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (191, N'asd222', CAST(N'2020-11-10 19:01:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (192, N'qwe123', CAST(N'2020-11-10 19:08:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (193, N'aa 123', CAST(N'2020-12-10 08:42:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (194, N'aaa', CAST(N'2020-12-10 08:43:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (195, N'aa 123', CAST(N'2020-12-10 08:44:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (196, N'aa 123', CAST(N'2020-12-10 08:46:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (197, N'a123', CAST(N'2020-12-10 08:47:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (198, N'jj 123', CAST(N'2020-12-10 12:09:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (416, N'aa', CAST(N'2020-02-11 08:14:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (417, N'lcf 870', CAST(N'2020-02-11 09:38:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (418, N'ogs 824', CAST(N'2020-02-11 10:37:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (419, N'ac 644', CAST(N'2020-02-11 10:39:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (420, N'glo 337', CAST(N'2020-02-11 11:55:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (421, N'ab 816', CAST(N'2020-02-11 12:23:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (422, N'aa 566', CAST(N'2020-02-11 12:24:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (423, N'ab616', CAST(N'2020-02-11 12:36:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (424, N'kah 566', CAST(N'2020-02-11 15:30:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (425, N'ab 045', CAST(N'2020-02-11 15:40:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (426, N'aat369', CAST(N'2020-02-11 16:41:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (427, N'aa', CAST(N'2020-03-11 08:06:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (428, N'ab 771 aj', CAST(N'2020-03-11 08:37:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (429, N'ab771aj', CAST(N'2020-03-11 08:38:00' AS SmallDateTime), 1, 3, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (430, N'kjg 364', CAST(N'2020-03-11 09:31:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (431, N'ac 199', CAST(N'2020-03-11 10:06:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (432, N'gxy 854', CAST(N'2020-03-11 10:14:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (433, N'gringo 238', CAST(N'2020-03-11 10:41:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (434, N'cmz 669', CAST(N'2020-03-11 10:49:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (435, N'ntk 988', CAST(N'2020-03-11 11:06:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (436, N'hsf 341', CAST(N'2020-03-11 11:36:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (437, N'ifi 510', CAST(N'2020-03-11 11:40:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (438, N'ots 975', CAST(N'2020-03-11 11:44:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (439, N'ac 164', CAST(N'2020-03-11 11:45:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (440, N'obf 738', CAST(N'2020-03-11 12:21:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (441, N'fam 301', CAST(N'2020-03-11 12:27:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (442, N'ad 325', CAST(N'2020-03-11 13:17:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (443, N'kjg 364', CAST(N'2020-03-11 13:58:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (444, N'rkn 450', CAST(N'2020-03-11 15:18:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (445, N'164', CAST(N'2020-03-11 16:01:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (446, N'aa', CAST(N'2020-04-11 08:13:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (447, N'aa 891', CAST(N'2020-04-11 09:41:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (448, N'gringo 238', CAST(N'2020-04-11 10:20:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (449, N'dos 397', CAST(N'2020-04-11 10:24:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (450, N'ac 741', CAST(N'2020-04-11 10:48:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (451, N'aa 554', CAST(N'2020-04-11 10:58:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (452, N'aa 429', CAST(N'2020-04-11 11:48:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (453, N'cbp 114', CAST(N'2020-04-11 11:57:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (454, N'imr 222', CAST(N'2020-04-11 12:59:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (455, N'jei 812', CAST(N'2020-04-11 13:54:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (456, N'ad 178', CAST(N'2020-04-11 13:55:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (457, N'kah 566', CAST(N'2020-04-11 15:27:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (458, N'ac 949', CAST(N'2020-04-11 16:24:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (459, N'lga 385', CAST(N'2020-04-11 17:22:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (460, N'kum 145', CAST(N'2020-05-11 09:30:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (461, N'ac 472', CAST(N'2020-05-11 10:15:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (462, N'ac 430', CAST(N'2020-05-11 10:19:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (463, N'pfv 121', CAST(N'2020-05-11 10:48:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (464, N'gringo 238', CAST(N'2020-05-11 11:21:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (465, N'ad 797', CAST(N'2020-05-11 11:44:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (466, N'q 308', CAST(N'2020-05-11 11:58:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (467, N'fqy 705', CAST(N'2020-05-11 12:05:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (468, N'ac 383', CAST(N'2020-05-11 12:42:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (469, N'moh 237', CAST(N'2020-05-11 12:50:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (470, N'777', CAST(N'2020-05-11 13:27:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (471, N'ac 289', CAST(N'2020-05-11 15:03:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (472, N'kum 145', CAST(N'2020-05-11 15:17:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (473, N'fbt 836', CAST(N'2020-05-11 15:20:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (474, N'ac 854', CAST(N'2020-05-11 15:21:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (475, N'kjg 364', CAST(N'2020-05-11 16:11:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (476, N'ad 192', CAST(N'2020-05-11 19:19:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (477, N'ac 785', CAST(N'2020-06-11 08:15:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (478, N'ac 262', CAST(N'2020-06-11 08:20:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (479, N'ab 301', CAST(N'2020-06-11 09:33:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (480, N'lod 902', CAST(N'2020-06-11 09:42:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (481, N'owf 090', CAST(N'2020-06-11 09:50:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (482, N'hsy 237', CAST(N'2020-06-11 10:26:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (483, N'myb 400', CAST(N'2020-06-11 11:07:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (484, N'ad 633', CAST(N'2020-06-11 11:26:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (485, N'fnb 198', CAST(N'2020-06-11 11:29:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (486, N'mve 614', CAST(N'2020-06-11 14:11:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (487, N'lqe 354', CAST(N'2020-06-11 16:22:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (488, N'bfg 338', CAST(N'2020-06-11 17:19:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (489, N'coi 618', CAST(N'2020-06-11 17:26:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (490, N'hzm 750', CAST(N'2020-06-11 17:37:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (491, N'ad 207', CAST(N'2020-06-11 18:04:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (492, N'067', CAST(N'2020-07-11 09:15:00' AS SmallDateTime), 2, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (493, N'ae 001', CAST(N'2020-07-11 09:19:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (494, N'ae 001', CAST(N'2020-07-11 09:31:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (495, N'otb 517', CAST(N'2020-07-11 09:44:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (496, N'aa 429', CAST(N'2020-07-11 09:50:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (497, N'jgs 763', CAST(N'2020-07-11 11:23:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (498, N'bja 937', CAST(N'2020-07-11 11:36:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (499, N'nin 258', CAST(N'2020-07-11 11:51:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (500, N'gringo 238', CAST(N'2020-07-11 12:19:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (501, N'kum 145', CAST(N'2020-09-11 08:10:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (502, N'ac 262', CAST(N'2020-09-11 08:29:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (503, N'oee 936', CAST(N'2020-09-11 10:02:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (504, N'ac 029', CAST(N'2020-09-11 10:04:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (505, N'uga 895', CAST(N'2020-09-11 11:13:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (506, N'mpw 588', CAST(N'2020-09-11 11:15:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (507, N'ac 383', CAST(N'2020-09-11 11:20:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (508, N'tki 470', CAST(N'2020-09-11 11:27:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (509, N'nom 495', CAST(N'2020-09-11 11:41:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (510, N'lsv 207', CAST(N'2020-09-11 12:20:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (511, N'ncd 811', CAST(N'2020-09-11 12:21:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (512, N'aa 554', CAST(N'2020-09-11 13:51:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (513, N'kbi 133', CAST(N'2020-09-11 14:01:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (514, N'981', CAST(N'2020-09-11 15:19:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (515, N'ae 260', CAST(N'2020-09-11 16:20:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (516, N'75', CAST(N'2020-09-11 17:02:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (517, N'tky 470', CAST(N'2020-09-11 17:07:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (518, N'iqg 402', CAST(N'2020-09-11 17:40:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (519, N'aa', CAST(N'2020-10-11 08:03:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (520, N'ovu 264', CAST(N'2020-10-11 09:46:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (521, N'owf 090', CAST(N'2020-10-11 10:25:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (522, N'est 164', CAST(N'2020-10-11 10:34:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (523, N'jbp 404', CAST(N'2020-10-11 10:50:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (524, N'hdi 165', CAST(N'2020-10-11 10:56:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (525, N'ad 975', CAST(N'2020-10-11 12:15:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (526, N'244', CAST(N'2020-10-11 12:32:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (527, N'mjc 164', CAST(N'2020-10-11 16:04:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (528, N'kgh 978', CAST(N'2020-10-11 16:42:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (529, N'dpx 563', CAST(N'2020-10-11 16:49:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (530, N'753', CAST(N'2020-10-11 17:07:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (531, N'ac 320', CAST(N'2020-10-11 18:18:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (532, N'mnd 591', CAST(N'2020-11-11 09:52:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (533, N'ab 302', CAST(N'2020-11-11 09:58:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (534, N'aa 429', CAST(N'2020-11-11 10:44:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (535, N'ifz 845', CAST(N'2020-11-11 10:56:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (536, N'ad 292', CAST(N'2020-11-11 10:56:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (537, N'njg 081', CAST(N'2020-11-11 11:08:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (538, N'aa 238', CAST(N'2020-11-11 11:10:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (539, N'huc918', CAST(N'2020-11-11 12:19:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (540, N'nad 912', CAST(N'2020-11-11 12:21:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (541, N'nin 322', CAST(N'2020-11-11 12:33:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (542, N'rlw 654', CAST(N'2020-11-11 13:03:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (543, N'ad 244', CAST(N'2020-11-11 13:40:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (544, N'kah 566', CAST(N'2020-11-11 15:59:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (545, N'wwc 435', CAST(N'2020-11-11 16:09:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (546, N'gxy 854', CAST(N'2020-12-11 09:30:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (547, N'lpu 842', CAST(N'2020-12-11 09:52:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (548, N'elj 442', CAST(N'2020-12-11 09:54:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (549, N'iik 610', CAST(N'2020-12-11 10:30:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (550, N'aqy 714', CAST(N'2020-12-11 10:56:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (551, N'aa 822', CAST(N'2020-12-11 11:12:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (552, N'bhl 676', CAST(N'2020-12-11 11:12:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (553, N'aa 238', CAST(N'2020-12-11 11:13:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (554, N'hnk 305', CAST(N'2020-12-11 11:28:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (555, N'aa 202', CAST(N'2020-12-11 11:29:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (556, N'aa 241', CAST(N'2020-12-11 11:37:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (557, N'kcn 290', CAST(N'2020-12-11 12:32:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (558, N'lto 207', CAST(N'2020-12-11 14:29:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (559, N'ab 502', CAST(N'2020-12-11 15:32:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (560, N'mmi 196', CAST(N'2020-12-11 15:57:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (561, N'kti 526', CAST(N'2020-12-11 16:23:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (562, N'065', CAST(N'2020-12-11 17:54:00' AS SmallDateTime), 2, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (563, N'ad 207', CAST(N'2020-12-11 18:15:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (586, N'fas0545', CAST(N'2021-06-21 20:03:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (587, N'asd123', CAST(N'2021-06-21 20:45:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (588, N'fas045', CAST(N'2021-06-21 20:51:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (589, N'asd123', CAST(N'2021-06-21 20:51:00' AS SmallDateTime), 1, 1, 1)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (590, N'asd123', CAST(N'2021-06-21 20:52:00' AS SmallDateTime), 1, 1, 0)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (591, N's', CAST(N'2021-06-21 20:52:00' AS SmallDateTime), 1, 1, 0)
+GO
+INSERT [dbo].[Estacionamiento] ([Id], [Patente], [Entrada], [TipoVehiculo_Id], [TipoEstadia_Id], [Finalizado]) VALUES (592, N'asd123', CAST(N'2021-06-21 20:52:00' AS SmallDateTime), 1, 1, 0)
+GO
+SET IDENTITY_INSERT [dbo].[Estacionamiento] OFF
+GO
+SET IDENTITY_INSERT [dbo].[HistorialEstacionamiento] ON 
+
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (90, CAST(N'2020-01-10 09:31:00' AS SmallDateTime), 50, N'20 minutos', 1, 89)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (91, CAST(N'2020-01-10 10:14:00' AS SmallDateTime), 50, N'14 minutos', 1, 90)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (92, CAST(N'2020-01-10 11:06:00' AS SmallDateTime), 50, N'22 minutos', 1, 91)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (93, CAST(N'2020-01-10 11:21:00' AS SmallDateTime), 50, N'2 minutos', 1, 93)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (94, CAST(N'2020-01-10 11:31:00' AS SmallDateTime), 75, N'35 minutos', 1, 92)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (95, CAST(N'2020-01-10 12:23:00' AS SmallDateTime), 75, N'44 minutos', 2, 95)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (96, CAST(N'2020-01-10 12:36:00' AS SmallDateTime), 125, N'1 hora y 15 minutos', 2, 94)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (97, CAST(N'2020-01-10 15:10:00' AS SmallDateTime), 50, N'7 minutos', 2, 98)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (98, CAST(N'2020-01-10 15:10:00' AS SmallDateTime), 50, N'30 minutos', 2, 96)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (99, CAST(N'2020-01-10 15:43:00' AS SmallDateTime), 75, N'33 minutos', 2, 99)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (100, CAST(N'2020-01-10 16:15:00' AS SmallDateTime), 125, N'1 hora y 14 minutos', 2, 97)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (101, CAST(N'2020-01-10 16:15:00' AS SmallDateTime), 100, N'48 minutos', 2, 100)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (102, CAST(N'2020-01-10 18:34:00' AS SmallDateTime), 50, N'2 minutos', 2, 101)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (103, CAST(N'2020-02-10 10:53:00' AS SmallDateTime), 50, N'12 minutos', 1, 105)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (104, CAST(N'2020-02-10 11:06:00' AS SmallDateTime), 125, N'1 hora y 13 minutos', 1, 102)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (105, CAST(N'2020-02-10 11:07:00' AS SmallDateTime), 50, N'12 minutos', 1, 107)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (106, CAST(N'2020-02-10 11:08:00' AS SmallDateTime), 125, N'1 hora y 1 minutos', 1, 103)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (107, CAST(N'2020-02-10 11:19:00' AS SmallDateTime), 50, N'24 minutos', 1, 106)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (108, CAST(N'2020-02-10 11:20:00' AS SmallDateTime), 50, N'9 minutos', 1, 109)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (109, CAST(N'2020-02-10 11:38:00' AS SmallDateTime), 75, N'36 minutos', 1, 108)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (110, CAST(N'2020-02-10 11:54:00' AS SmallDateTime), 175, N'1 hora y 42 minutos', 1, 104)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (111, CAST(N'2020-02-10 12:15:00' AS SmallDateTime), 75, N'37 minutos', 1, 110)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (112, CAST(N'2020-02-10 12:29:00' AS SmallDateTime), 50, N'16 minutos', 1, 112)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (113, CAST(N'2020-02-10 13:53:00' AS SmallDateTime), 200, N'1 hora y 49 minutos', 1, 111)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (114, CAST(N'2020-02-10 15:29:00' AS SmallDateTime), 50, N'15 minutos', 1, 113)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (115, CAST(N'2020-02-10 17:14:00' AS SmallDateTime), 75, N'37 minutos', 1, 114)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (116, CAST(N'2020-02-10 17:55:00' AS SmallDateTime), 150, N'1 hora y 19 minutos', 1, 114)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (117, CAST(N'2020-03-10 12:18:00' AS SmallDateTime), 100, N'50 minutos', 1, 116)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (118, CAST(N'2020-03-10 12:20:00' AS SmallDateTime), 100, N'53 minutos', 1, 115)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (119, CAST(N'2020-05-10 09:44:00' AS SmallDateTime), 75, N'35 minutos', 1, 118)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (120, CAST(N'2020-05-10 10:01:00' AS SmallDateTime), 150, N'1 hora y 16 minutos', 1, 117)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (121, CAST(N'2020-05-10 10:26:00' AS SmallDateTime), 50, N'19 minutos', 1, 121)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (122, CAST(N'2020-05-10 10:53:00' AS SmallDateTime), 125, N'1 hora y 12 minutos', 1, 119)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (123, CAST(N'2020-05-10 11:09:00' AS SmallDateTime), 100, N'49 minutos', 1, 122)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (124, CAST(N'2020-05-10 11:17:00' AS SmallDateTime), 150, N'1 hora y 27 minutos', 1, 120)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (125, CAST(N'2020-05-10 11:25:00' AS SmallDateTime), 75, N'34 minutos', 1, 123)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (126, CAST(N'2020-05-10 11:27:00' AS SmallDateTime), 50, N'0 ', 1, 125)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (127, CAST(N'2020-05-10 12:48:00' AS SmallDateTime), 50, N'1 minutos', 2, 127)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (128, CAST(N'2020-05-10 12:49:00' AS SmallDateTime), 150, N'1 hora y 22 minutos', 2, 124)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (129, CAST(N'2020-05-10 13:52:00' AS SmallDateTime), 150, N'1 hora y 27 minutos', 2, 126)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (130, CAST(N'2020-05-10 16:59:00' AS SmallDateTime), 325, N'3 horas y 10 minutos', 2, 128)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (131, CAST(N'2020-05-10 17:16:00' AS SmallDateTime), 50, N'0 ', 2, 131)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (132, CAST(N'2020-05-10 17:30:00' AS SmallDateTime), 100, N'54 minutos', 1, 129)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (133, CAST(N'2020-05-10 18:05:00' AS SmallDateTime), 150, N'1 hora y 21 minutos', 1, 130)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (134, CAST(N'2020-05-10 18:30:00' AS SmallDateTime), 125, N'1 hora y 14 minutos', 1, 132)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (135, CAST(N'2020-06-10 09:09:00' AS SmallDateTime), 50, N'24 minutos', 1, 133)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (136, CAST(N'2020-06-10 10:09:00' AS SmallDateTime), 50, N'27 minutos', 1, 134)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (137, CAST(N'2020-06-10 10:55:00' AS SmallDateTime), 50, N'22 minutos', 1, 138)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (138, CAST(N'2020-06-10 11:01:00' AS SmallDateTime), 75, N'37 minutos', 1, 136)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (139, CAST(N'2020-06-10 11:14:00' AS SmallDateTime), 125, N'1 hora y 1 minutos', 1, 135)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (140, CAST(N'2020-06-10 11:20:00' AS SmallDateTime), 100, N'52 minutos', 1, 137)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (141, CAST(N'2020-06-10 11:41:00' AS SmallDateTime), 50, N'1 minutos', 1, 143)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (142, CAST(N'2020-06-10 11:44:00' AS SmallDateTime), 75, N'45 minutos', 1, 139)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (143, CAST(N'2020-06-10 11:56:00' AS SmallDateTime), 50, N'24 minutos', 1, 142)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (144, CAST(N'2020-06-10 12:25:00' AS SmallDateTime), 100, N'59 minutos', 2, 140)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (145, CAST(N'2020-06-10 13:10:00' AS SmallDateTime), 75, N'38 minutos', 2, 144)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (146, CAST(N'2020-06-10 13:23:00' AS SmallDateTime), 200, N'1 hora y 54 minutos', 2, 141)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (147, CAST(N'2020-06-10 13:53:00' AS SmallDateTime), 50, N'6 minutos', 2, 146)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (148, CAST(N'2020-06-10 14:21:00' AS SmallDateTime), 50, N'20 minutos', 2, 147)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (149, CAST(N'2020-06-10 14:24:00' AS SmallDateTime), 80, N'1 hora', 2, 145)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (150, CAST(N'2020-06-10 15:21:00' AS SmallDateTime), 50, N'19 minutos', 2, 148)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (151, CAST(N'2020-06-10 19:36:00' AS SmallDateTime), 100, N'57 minutos', 1, 149)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (152, CAST(N'2020-06-10 19:44:00' AS SmallDateTime), 75, N'40 minutos', 1, 150)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (153, CAST(N'2020-07-10 08:23:00' AS SmallDateTime), 50, N'2 minutos', 1, 151)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (154, CAST(N'2020-07-10 08:24:00' AS SmallDateTime), 400, N'0 ', 1, 152)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (155, CAST(N'2020-07-10 09:59:00' AS SmallDateTime), 150, N'1 hora y 25 minutos', 1, 153)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (156, CAST(N'2020-07-10 10:31:00' AS SmallDateTime), 50, N'13 minutos', 1, 155)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (157, CAST(N'2020-07-10 10:59:00' AS SmallDateTime), 125, N'1 hora y 10 minutos', 1, 154)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (158, CAST(N'2020-07-10 12:02:00' AS SmallDateTime), 50, N'1 minutos', 1, 159)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (159, CAST(N'2020-07-10 12:08:00' AS SmallDateTime), 75, N'45 minutos', 1, 157)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (160, CAST(N'2020-07-10 12:08:00' AS SmallDateTime), 125, N'1 hora y 2 minutos', 1, 156)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (161, CAST(N'2020-07-10 12:50:00' AS SmallDateTime), 100, N'47 minutos', 2, 160)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (162, CAST(N'2020-07-10 12:50:00' AS SmallDateTime), 125, N'1 hora y 5 minutos', 2, 158)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (163, CAST(N'2020-07-10 13:18:00' AS SmallDateTime), 50, N'21 minutos', 2, 161)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (164, CAST(N'2020-07-10 13:34:00' AS SmallDateTime), 50, N'27 minutos', 2, 162)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (165, CAST(N'2020-07-10 14:23:00' AS SmallDateTime), 50, N'14 minutos', 2, 163)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (166, CAST(N'2020-07-10 18:15:00' AS SmallDateTime), 250, N'2 horas y 16 minutos', 1, 164)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (167, CAST(N'2020-08-10 09:23:00' AS SmallDateTime), 50, N'0 ', 1, 165)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (168, CAST(N'2020-08-10 10:02:00' AS SmallDateTime), 50, N'24 minutos', 1, 167)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (169, CAST(N'2020-08-10 10:51:00' AS SmallDateTime), 100, N'58 minutos', 1, 168)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (170, CAST(N'2020-08-10 10:54:00' AS SmallDateTime), 50, N'23 minutos', 1, 169)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (171, CAST(N'2020-08-10 11:27:00' AS SmallDateTime), 225, N'2 horas y 3 minutos', 1, 166)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (172, CAST(N'2020-08-10 12:27:00' AS SmallDateTime), 75, N'32 minutos', 2, 171)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (173, CAST(N'2020-08-10 12:32:00' AS SmallDateTime), 150, N'1 hora y 27 minutos', 2, 170)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (174, CAST(N'2020-08-10 17:05:00' AS SmallDateTime), 125, N'1 hora y 14 minutos', 2, 173)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (175, CAST(N'2020-08-10 18:35:00' AS SmallDateTime), 125, N'1 hora y 6 minutos', 1, 174)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (176, CAST(N'2020-08-10 19:42:00' AS SmallDateTime), 400, N'4 horas y 6 minutos', 1, 172)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (177, CAST(N'2020-09-10 09:21:00' AS SmallDateTime), 50, N'8 minutos', 1, 177)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (178, CAST(N'2020-09-10 09:42:00' AS SmallDateTime), 100, N'59 minutos', 1, 175)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (179, CAST(N'2020-09-10 09:48:00' AS SmallDateTime), 100, N'59 minutos', 1, 176)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (180, CAST(N'2020-09-10 10:32:00' AS SmallDateTime), 50, N'13 minutos', 1, 179)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (181, CAST(N'2020-09-10 11:00:00' AS SmallDateTime), 75, N'45 minutos', 1, 178)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (182, CAST(N'2020-09-10 11:52:00' AS SmallDateTime), 50, N'13 minutos', 1, 180)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (183, CAST(N'2020-09-10 13:02:00' AS SmallDateTime), 125, N'1 hora y 14 minutos', 2, 181)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (184, CAST(N'2020-10-10 11:43:00' AS SmallDateTime), 50, N'4 minutos', 1, 183)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (185, CAST(N'2020-10-10 12:07:00' AS SmallDateTime), 50, N'8 minutos', 1, 184)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (186, CAST(N'2020-10-10 12:54:00' AS SmallDateTime), 175, N'1 hora y 35 minutos', 1, 182)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (187, CAST(N'2020-11-10 18:14:00' AS SmallDateTime), 50, N'0 ', 1, 185)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (188, CAST(N'2020-11-10 18:22:00' AS SmallDateTime), 50, N'3 minutos', 1, 186)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (189, CAST(N'2020-11-10 18:41:00' AS SmallDateTime), 50, N'0 ', 1, 187)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (190, CAST(N'2020-11-10 18:43:00' AS SmallDateTime), 50, N'0 ', 1, 188)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (191, CAST(N'2020-11-10 19:00:00' AS SmallDateTime), 50, N'17 minutos', 1, 189)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (192, CAST(N'2020-11-10 19:02:00' AS SmallDateTime), 50, N'1 minutos', 1, 190)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (193, CAST(N'2020-11-10 19:11:00' AS SmallDateTime), 50, N'9 minutos', 1, 191)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (194, CAST(N'2020-11-10 19:11:00' AS SmallDateTime), 50, N'2 minutos', 1, 192)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (195, CAST(N'2020-12-10 08:43:00' AS SmallDateTime), 50, N'0 ', 2, 193)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (196, CAST(N'2020-12-10 08:44:00' AS SmallDateTime), 50, N'0 ', 2, 194)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (197, CAST(N'2020-12-10 08:45:00' AS SmallDateTime), 50, N'0 ', 1, 195)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (198, CAST(N'2020-12-10 08:47:00' AS SmallDateTime), 50, N'0 ', 1, 196)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (199, CAST(N'2020-12-10 08:48:00' AS SmallDateTime), 50, N'0 ', 2, 197)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (200, CAST(N'2020-12-10 12:09:00' AS SmallDateTime), 50, N'0 ', 2, 198)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (419, CAST(N'2020-02-11 08:14:00' AS SmallDateTime), 50, N'0 ', 1, 416)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (420, CAST(N'2020-02-11 10:05:00' AS SmallDateTime), 50, N'27 minutos', 1, 417)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (421, CAST(N'2020-02-11 10:56:00' AS SmallDateTime), 50, N'19 minutos', 1, 418)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (422, CAST(N'2020-02-11 10:57:00' AS SmallDateTime), 50, N'18 minutos', 1, 419)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (423, CAST(N'2020-02-11 12:41:00' AS SmallDateTime), 50, N'17 minutos', 1, 421)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (424, CAST(N'2020-02-11 12:48:00' AS SmallDateTime), 50, N'11 minutos', 1, 423)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (425, CAST(N'2020-02-11 12:50:00' AS SmallDateTime), 100, N'54 minutos', 1, 420)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (426, CAST(N'2020-02-11 13:16:00' AS SmallDateTime), 100, N'51 minutos', 1, 422)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (427, CAST(N'2020-02-11 16:58:00' AS SmallDateTime), 150, N'1 hora y 28 minutos', 1, 424)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (428, CAST(N'2020-02-11 17:08:00' AS SmallDateTime), 150, N'1 hora y 27 minutos', 1, 425)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (429, CAST(N'2020-02-11 17:35:00' AS SmallDateTime), 100, N'54 minutos', 1, 426)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (430, CAST(N'2020-03-11 08:06:00' AS SmallDateTime), 50, N'0 ', 2, 427)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (431, CAST(N'2020-03-11 08:38:00' AS SmallDateTime), 400, N'0 ', 1, 429)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (432, CAST(N'2020-03-11 08:38:00' AS SmallDateTime), 50, N'1 minutos', 1, 428)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (433, CAST(N'2020-03-11 10:18:00' AS SmallDateTime), 50, N'11 minutos', 1, 431)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (434, CAST(N'2020-03-11 10:46:00' AS SmallDateTime), 50, N'4 minutos', 1, 433)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (435, CAST(N'2020-03-11 11:01:00' AS SmallDateTime), 100, N'47 minutos', 1, 432)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (436, CAST(N'2020-03-11 11:11:00' AS SmallDateTime), 175, N'1 hora y 39 minutos', 1, 430)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (437, CAST(N'2020-03-11 11:21:00' AS SmallDateTime), 75, N'31 minutos', 1, 434)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (438, CAST(N'2020-03-11 11:45:00' AS SmallDateTime), 50, N'9 minutos', 1, 436)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (439, CAST(N'2020-03-11 12:12:00' AS SmallDateTime), 50, N'27 minutos', 2, 439)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (440, CAST(N'2020-03-11 12:17:00' AS SmallDateTime), 75, N'32 minutos', 2, 438)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (441, CAST(N'2020-03-11 12:34:00' AS SmallDateTime), 50, N'6 minutos', 2, 441)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (442, CAST(N'2020-03-11 12:38:00' AS SmallDateTime), 175, N'1 hora y 32 minutos', 2, 435)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (443, CAST(N'2020-03-11 12:46:00' AS SmallDateTime), 50, N'25 minutos', 2, 440)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (444, CAST(N'2020-03-11 13:18:00' AS SmallDateTime), 175, N'1 hora y 38 minutos', 2, 437)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (445, CAST(N'2020-03-11 13:41:00' AS SmallDateTime), 50, N'23 minutos', 2, 442)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (446, CAST(N'2020-03-11 14:06:00' AS SmallDateTime), 50, N'7 minutos', 2, 443)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (447, CAST(N'2020-03-11 16:05:00' AS SmallDateTime), 100, N'47 minutos', 2, 444)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (448, CAST(N'2020-03-11 16:23:00' AS SmallDateTime), 50, N'22 minutos', 2, 445)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (449, CAST(N'2020-03-11 18:18:00' AS SmallDateTime), 250, N'2 horas y 17 minutos', 2, 445)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (450, CAST(N'2020-04-11 08:14:00' AS SmallDateTime), 50, N'0 ', 1, 446)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (451, CAST(N'2020-04-11 09:58:00' AS SmallDateTime), 50, N'17 minutos', 1, 447)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (452, CAST(N'2020-04-11 10:20:00' AS SmallDateTime), 50, N'0 ', 1, 448)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (453, CAST(N'2020-04-11 10:58:00' AS SmallDateTime), 50, N'9 minutos', 1, 450)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (454, CAST(N'2020-04-11 11:23:00' AS SmallDateTime), 50, N'24 minutos', 1, 451)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (455, CAST(N'2020-04-11 12:02:00' AS SmallDateTime), 175, N'1 hora y 37 minutos', 1, 449)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (456, CAST(N'2020-04-11 12:25:00' AS SmallDateTime), 50, N'27 minutos', 2, 453)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (457, CAST(N'2020-04-11 12:33:00' AS SmallDateTime), 75, N'45 minutos', 2, 452)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (458, CAST(N'2020-04-11 14:12:00' AS SmallDateTime), 125, N'1 hora y 12 minutos', 2, 454)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (459, CAST(N'2020-04-11 14:20:00' AS SmallDateTime), 50, N'25 minutos', 2, 455)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (460, CAST(N'2020-04-11 14:37:00' AS SmallDateTime), 75, N'41 minutos', 2, 456)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (461, CAST(N'2020-04-11 16:33:00' AS SmallDateTime), 50, N'9 minutos', 2, 458)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (462, CAST(N'2020-04-11 16:51:00' AS SmallDateTime), 150, N'1 hora y 23 minutos', 2, 457)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (463, CAST(N'2020-04-11 18:27:00' AS SmallDateTime), 125, N'1 hora y 4 minutos', 2, 459)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (464, CAST(N'2020-05-11 10:54:00' AS SmallDateTime), 50, N'6 minutos', 1, 463)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (465, CAST(N'2020-05-11 10:56:00' AS SmallDateTime), 75, N'40 minutos', 1, 461)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (466, CAST(N'2020-05-11 11:21:00' AS SmallDateTime), 50, N'0 ', 1, 464)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (467, CAST(N'2020-05-11 11:24:00' AS SmallDateTime), 200, N'1 hora y 54 minutos', 1, 460)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (468, CAST(N'2020-05-11 11:46:00' AS SmallDateTime), 150, N'1 hora y 27 minutos', 1, 462)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (469, CAST(N'2020-05-11 11:59:00' AS SmallDateTime), 50, N'15 minutos', 1, 465)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (470, CAST(N'2020-05-11 12:12:00' AS SmallDateTime), 50, N'6 minutos', 1, 467)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (471, CAST(N'2020-05-11 12:18:00' AS SmallDateTime), 50, N'20 minutos', 2, 466)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (472, CAST(N'2020-05-11 13:01:00' AS SmallDateTime), 50, N'19 minutos', 2, 468)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (473, CAST(N'2020-05-11 13:07:00' AS SmallDateTime), 50, N'17 minutos', 2, 469)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (474, CAST(N'2020-05-11 15:49:00' AS SmallDateTime), 75, N'45 minutos', 2, 471)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (475, CAST(N'2020-05-11 16:00:00' AS SmallDateTime), 275, N'2 horas y 33 minutos', 2, 470)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (476, CAST(N'2020-05-11 16:15:00' AS SmallDateTime), 100, N'54 minutos', 2, 474)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (477, CAST(N'2020-05-11 16:24:00' AS SmallDateTime), 50, N'13 minutos', 2, 475)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (478, CAST(N'2020-05-11 18:26:00' AS SmallDateTime), 325, N'3 horas y 9 minutos', 2, 472)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (479, CAST(N'2020-05-11 19:03:00' AS SmallDateTime), 375, N'3 horas y 43 minutos', 2, 473)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (480, CAST(N'2020-05-11 20:22:00' AS SmallDateTime), 125, N'1 hora y 2 minutos', 2, 476)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (481, CAST(N'2020-06-11 08:16:00' AS SmallDateTime), 50, N'0 ', 1, 477)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (482, CAST(N'2020-06-11 09:35:00' AS SmallDateTime), 125, N'1 hora y 15 minutos', 1, 478)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (483, CAST(N'2020-06-11 10:01:00' AS SmallDateTime), 50, N'27 minutos', 1, 479)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (484, CAST(N'2020-06-11 10:03:00' AS SmallDateTime), 50, N'20 minutos', 1, 480)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (485, CAST(N'2020-06-11 10:56:00' AS SmallDateTime), 125, N'1 hora y 5 minutos', 1, 481)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (486, CAST(N'2020-06-11 12:03:00' AS SmallDateTime), 75, N'33 minutos', 2, 485)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (487, CAST(N'2020-06-11 12:19:00' AS SmallDateTime), 100, N'53 minutos', 2, 484)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (488, CAST(N'2020-06-11 12:20:00' AS SmallDateTime), 125, N'1 hora y 13 minutos', 2, 483)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (489, CAST(N'2020-06-11 12:36:00' AS SmallDateTime), 225, N'2 horas y 10 minutos', 2, 482)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (490, CAST(N'2020-06-11 14:48:00' AS SmallDateTime), 75, N'37 minutos', 2, 486)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (491, CAST(N'2020-06-11 17:05:00' AS SmallDateTime), 75, N'43 minutos', 2, 487)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (492, CAST(N'2020-06-11 17:34:00' AS SmallDateTime), 50, N'14 minutos', 2, 488)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (493, CAST(N'2020-06-11 18:45:00' AS SmallDateTime), 75, N'40 minutos', 2, 491)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (494, CAST(N'2020-06-11 19:09:00' AS SmallDateTime), 175, N'1 hora y 42 minutos', 2, 489)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (495, CAST(N'2020-06-11 19:13:00' AS SmallDateTime), 175, N'1 hora y 35 minutos', 2, 490)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (496, CAST(N'2020-07-11 09:21:00' AS SmallDateTime), 50, N'1 minutos', 1, 493)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (497, CAST(N'2020-07-11 09:30:00' AS SmallDateTime), 40, N'15 minutos', 1, 492)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (498, CAST(N'2020-07-11 10:08:00' AS SmallDateTime), 50, N'17 minutos', 1, 496)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (499, CAST(N'2020-07-11 10:14:00' AS SmallDateTime), 75, N'43 minutos', 1, 494)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (500, CAST(N'2020-07-11 11:09:00' AS SmallDateTime), 150, N'1 hora y 25 minutos', 1, 495)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (501, CAST(N'2020-07-11 11:58:00' AS SmallDateTime), 50, N'21 minutos', 1, 498)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (502, CAST(N'2020-07-11 12:19:00' AS SmallDateTime), 50, N'0 ', 1, 500)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (503, CAST(N'2020-07-11 12:41:00' AS SmallDateTime), 150, N'1 hora y 17 minutos', 1, 497)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (504, CAST(N'2020-07-11 12:41:00' AS SmallDateTime), 100, N'50 minutos', 1, 499)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (505, CAST(N'2020-09-11 09:05:00' AS SmallDateTime), 75, N'36 minutos', 1, 502)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (506, CAST(N'2020-09-11 10:24:00' AS SmallDateTime), 50, N'21 minutos', 1, 503)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (507, CAST(N'2020-09-11 10:36:00' AS SmallDateTime), 75, N'32 minutos', 1, 504)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (508, CAST(N'2020-09-11 11:26:00' AS SmallDateTime), 50, N'11 minutos', 1, 506)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (509, CAST(N'2020-09-11 11:46:00' AS SmallDateTime), 50, N'25 minutos', 1, 507)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (510, CAST(N'2020-09-11 11:50:00' AS SmallDateTime), 375, N'3 horas y 40 minutos', 1, 501)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (511, CAST(N'2020-09-11 12:14:00' AS SmallDateTime), 75, N'32 minutos', 1, 509)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (512, CAST(N'2020-09-11 12:24:00' AS SmallDateTime), 125, N'1 hora y 11 minutos', 2, 505)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (513, CAST(N'2020-09-11 12:50:00' AS SmallDateTime), 50, N'28 minutos', 2, 511)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (514, CAST(N'2020-09-11 12:53:00' AS SmallDateTime), 75, N'32 minutos', 2, 510)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (515, CAST(N'2020-09-11 14:03:00' AS SmallDateTime), 50, N'1 minutos', 2, 513)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (516, CAST(N'2020-09-11 14:15:00' AS SmallDateTime), 50, N'23 minutos', 2, 512)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (517, CAST(N'2020-09-11 14:56:00' AS SmallDateTime), 350, N'3 horas y 29 minutos', 2, 508)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (518, CAST(N'2020-09-11 16:36:00' AS SmallDateTime), 150, N'1 hora y 17 minutos', 2, 514)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (519, CAST(N'2020-09-11 17:02:00' AS SmallDateTime), 75, N'41 minutos', 2, 515)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (520, CAST(N'2020-09-11 17:02:00' AS SmallDateTime), 50, N'0 ', 2, 516)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (521, CAST(N'2020-09-11 18:19:00' AS SmallDateTime), 75, N'39 minutos', 2, 518)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (522, CAST(N'2020-09-11 18:59:00' AS SmallDateTime), 200, N'1 hora y 52 minutos', 1, 517)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (523, CAST(N'2020-10-11 08:03:00' AS SmallDateTime), 50, N'0 ', 1, 519)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (524, CAST(N'2020-10-11 09:59:00' AS SmallDateTime), 50, N'13 minutos', 1, 520)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (525, CAST(N'2020-10-11 10:56:00' AS SmallDateTime), 50, N'5 minutos', 1, 523)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (526, CAST(N'2020-10-11 11:30:00' AS SmallDateTime), 100, N'56 minutos', 1, 522)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (527, CAST(N'2020-10-11 11:48:00' AS SmallDateTime), 100, N'51 minutos', 1, 524)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (528, CAST(N'2020-10-11 12:06:00' AS SmallDateTime), 175, N'1 hora y 41 minutos', 1, 521)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (529, CAST(N'2020-10-11 13:21:00' AS SmallDateTime), 125, N'1 hora y 6 minutos', 2, 525)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (530, CAST(N'2020-10-11 17:05:00' AS SmallDateTime), 100, N'1 hora', 2, 527)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (531, CAST(N'2020-10-11 17:06:00' AS SmallDateTime), 400, N'4 horas y 34 minutos', 2, 526)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (532, CAST(N'2020-10-11 17:08:00' AS SmallDateTime), 50, N'26 minutos', 2, 528)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (533, CAST(N'2020-10-11 17:21:00' AS SmallDateTime), 50, N'14 minutos', 2, 530)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (534, CAST(N'2020-10-11 17:31:00' AS SmallDateTime), 75, N'42 minutos', 2, 529)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (535, CAST(N'2020-10-11 18:28:00' AS SmallDateTime), 50, N'10 minutos', 2, 531)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (536, CAST(N'2020-11-11 10:59:00' AS SmallDateTime), 50, N'3 minutos', 1, 535)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (537, CAST(N'2020-11-11 11:03:00' AS SmallDateTime), 125, N'1 hora y 4 minutos', 1, 533)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (538, CAST(N'2020-11-11 11:16:00' AS SmallDateTime), 50, N'5 minutos', 1, 538)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (539, CAST(N'2020-11-11 11:42:00' AS SmallDateTime), 100, N'58 minutos', 1, 534)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (540, CAST(N'2020-11-11 11:51:00' AS SmallDateTime), 100, N'55 minutos', 1, 536)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (541, CAST(N'2020-11-11 12:03:00' AS SmallDateTime), 100, N'54 minutos', 1, 537)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (542, CAST(N'2020-11-11 12:32:00' AS SmallDateTime), 50, N'12 minutos', 2, 539)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (543, CAST(N'2020-11-11 12:51:00' AS SmallDateTime), 300, N'2 horas y 58 minutos', 2, 532)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (544, CAST(N'2020-11-11 12:52:00' AS SmallDateTime), 50, N'30 minutos', 2, 540)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (545, CAST(N'2020-11-11 13:42:00' AS SmallDateTime), 75, N'38 minutos', 2, 542)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (546, CAST(N'2020-11-11 14:41:00' AS SmallDateTime), 225, N'2 horas y 7 minutos', 2, 541)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (547, CAST(N'2020-11-11 17:08:00' AS SmallDateTime), 350, N'3 horas y 27 minutos', 2, 543)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (548, CAST(N'2020-11-11 17:25:00' AS SmallDateTime), 150, N'1 hora y 25 minutos', 2, 544)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (549, CAST(N'2020-11-11 17:41:00' AS SmallDateTime), 175, N'1 hora y 32 minutos', 2, 545)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (550, CAST(N'2020-11-11 19:20:00' AS SmallDateTime), 325, N'3 horas y 10 minutos', 2, 545)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (551, CAST(N'2020-12-11 09:51:00' AS SmallDateTime), 50, N'20 minutos', 1, 546)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (552, CAST(N'2020-12-11 10:25:00' AS SmallDateTime), 75, N'31 minutos', 1, 548)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (553, CAST(N'2020-12-11 10:39:00' AS SmallDateTime), 100, N'47 minutos', 1, 547)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (554, CAST(N'2020-12-11 10:47:00' AS SmallDateTime), 50, N'16 minutos', 1, 549)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (555, CAST(N'2020-12-11 11:13:00' AS SmallDateTime), 50, N'0 ', 1, 553)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (556, CAST(N'2020-12-11 11:24:00' AS SmallDateTime), 50, N'27 minutos', 1, 550)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (557, CAST(N'2020-12-11 11:24:00' AS SmallDateTime), 50, N'27 minutos', 1, 550)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (558, CAST(N'2020-12-11 11:30:00' AS SmallDateTime), 50, N'18 minutos', 1, 551)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (559, CAST(N'2020-12-11 11:31:00' AS SmallDateTime), 50, N'2 minutos', 1, 554)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (560, CAST(N'2020-12-11 11:58:00' AS SmallDateTime), 50, N'29 minutos', 1, 555)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (561, CAST(N'2020-12-11 12:05:00' AS SmallDateTime), 50, N'28 minutos', 1, 556)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (562, CAST(N'2020-12-11 12:19:00' AS SmallDateTime), 125, N'1 hora y 6 minutos', 2, 552)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (563, CAST(N'2020-12-11 13:40:00' AS SmallDateTime), 125, N'1 hora y 7 minutos', 2, 557)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (564, CAST(N'2020-12-11 15:07:00' AS SmallDateTime), 75, N'38 minutos', 2, 558)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (565, CAST(N'2020-12-11 16:12:00' AS SmallDateTime), 75, N'39 minutos', 2, 559)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (566, CAST(N'2020-12-11 16:59:00' AS SmallDateTime), 75, N'36 minutos', 2, 561)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (567, CAST(N'2020-12-11 17:06:00' AS SmallDateTime), 125, N'1 hora y 9 minutos', 2, 560)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (568, CAST(N'2020-12-11 18:19:00' AS SmallDateTime), 40, N'25 minutos', 2, 562)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (569, CAST(N'2020-12-11 19:24:00' AS SmallDateTime), 125, N'1 hora y 9 minutos', 2, 563)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (592, CAST(N'2021-06-21 20:45:00' AS SmallDateTime), 90, N'41 minutos', 3, 586)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (593, CAST(N'2021-06-21 20:51:00' AS SmallDateTime), 40, N'6 minutos', 3, 587)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (594, CAST(N'2021-06-21 20:51:00' AS SmallDateTime), 40, N'6 minutos', 3, 587)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (595, CAST(N'2021-06-21 20:51:00' AS SmallDateTime), 40, N'0 ', 3, 588)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (596, CAST(N'2021-06-21 20:51:00' AS SmallDateTime), 40, N'0 ', 3, 589)
+GO
+INSERT [dbo].[HistorialEstacionamiento] ([Id], [Salida], [Importe], [Observaciones], [Usuario_Id], [Estacionamiento_Id]) VALUES (597, CAST(N'2021-06-21 20:52:00' AS SmallDateTime), 40, N'6 minutos', 3, 587)
+GO
+SET IDENTITY_INSERT [dbo].[HistorialEstacionamiento] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Perfil] ON 
+
+GO
+INSERT [dbo].[Perfil] ([Id], [Descripcion]) VALUES (1, N'Administrador')
+GO
+INSERT [dbo].[Perfil] ([Id], [Descripcion]) VALUES (2, N'Operador')
+GO
+SET IDENTITY_INSERT [dbo].[Perfil] OFF
+GO
+SET IDENTITY_INSERT [dbo].[TipoEstadia] ON 
+
+GO
+INSERT [dbo].[TipoEstadia] ([Id], [Descripcion], [Costo], [Habilitado]) VALUES (1, N'Por hora', 0, 1)
+GO
+INSERT [dbo].[TipoEstadia] ([Id], [Descripcion], [Costo], [Habilitado]) VALUES (2, N'Diaria', 400, 1)
+GO
+INSERT [dbo].[TipoEstadia] ([Id], [Descripcion], [Costo], [Habilitado]) VALUES (3, N'Nocturna', 400, 1)
+GO
+INSERT [dbo].[TipoEstadia] ([Id], [Descripcion], [Costo], [Habilitado]) VALUES (4, N'Completa (24hs)', 450, 1)
+GO
+SET IDENTITY_INSERT [dbo].[TipoEstadia] OFF
+GO
+SET IDENTITY_INSERT [dbo].[TipoVehiculo] ON 
+
+GO
+INSERT [dbo].[TipoVehiculo] ([Id], [Descripcion], [CostoMinimo], [CostoMedio], [CostoExtra], [Habilitado]) VALUES (1, N'Auto', 40, 60, 30, 1)
+GO
+INSERT [dbo].[TipoVehiculo] ([Id], [Descripcion], [CostoMinimo], [CostoMedio], [CostoExtra], [Habilitado]) VALUES (2, N'Moto', 40, 60, 30, 1)
+GO
+SET IDENTITY_INSERT [dbo].[TipoVehiculo] OFF
+GO
+SET IDENTITY_INSERT [dbo].[Usuario] ON 
+
+GO
+INSERT [dbo].[Usuario] ([Id], [User], [Password], [Perfil_Id], [Habilitado]) VALUES (1, N'cochera1', N'8963', 1, 1)
+GO
+INSERT [dbo].[Usuario] ([Id], [User], [Password], [Perfil_Id], [Habilitado]) VALUES (2, N'cochera2', N'1234', 2, 1)
+GO
+INSERT [dbo].[Usuario] ([Id], [User], [Password], [Perfil_Id], [Habilitado]) VALUES (3, N'admin', N'admin', 1, 1)
+GO
+SET IDENTITY_INSERT [dbo].[Usuario] OFF
+GO
+ALTER TABLE [dbo].[Estacionamiento]  WITH CHECK ADD  CONSTRAINT [FK_Estacionamiento_TipoEstadia] FOREIGN KEY([TipoEstadia_Id])
+REFERENCES [dbo].[TipoEstadia] ([Id])
+GO
+ALTER TABLE [dbo].[Estacionamiento] CHECK CONSTRAINT [FK_Estacionamiento_TipoEstadia]
+GO
+ALTER TABLE [dbo].[HistorialEstacionamiento]  WITH CHECK ADD  CONSTRAINT [FK_HistorialEstacionamiento_Estacionamiento] FOREIGN KEY([Estacionamiento_Id])
+REFERENCES [dbo].[Estacionamiento] ([Id])
+GO
+ALTER TABLE [dbo].[HistorialEstacionamiento] CHECK CONSTRAINT [FK_HistorialEstacionamiento_Estacionamiento]
+GO
+ALTER TABLE [dbo].[HistorialEstacionamiento]  WITH CHECK ADD  CONSTRAINT [FK_HistorialEstacionamiento_Usuario] FOREIGN KEY([Usuario_Id])
+REFERENCES [dbo].[Usuario] ([Id])
+GO
+ALTER TABLE [dbo].[HistorialEstacionamiento] CHECK CONSTRAINT [FK_HistorialEstacionamiento_Usuario]
+GO
+ALTER TABLE [dbo].[HistorialPersona]  WITH CHECK ADD  CONSTRAINT [FK_HistorialPersona_Persona] FOREIGN KEY([Persona_Id])
+REFERENCES [dbo].[Persona] ([Id])
+GO
+ALTER TABLE [dbo].[HistorialPersona] CHECK CONSTRAINT [FK_HistorialPersona_Persona]
+GO
+ALTER TABLE [dbo].[Usuario]  WITH CHECK ADD  CONSTRAINT [FK_Usuario_Perfil] FOREIGN KEY([Perfil_Id])
+REFERENCES [dbo].[Perfil] ([Id])
+GO
+ALTER TABLE [dbo].[Usuario] CHECK CONSTRAINT [FK_Usuario_Perfil]
+GO
+USE [master]
+GO
+ALTER DATABASE [Cochera] SET  READ_WRITE 
+GO

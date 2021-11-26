@@ -1,0 +1,79 @@
+﻿@model IEnumerable<Cochera.Models.HistorialEstacionamiento>
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    @Styles.Render("~/Content/css")
+    <title>Historial</title>
+</head>
+<body>
+    <div class="container">
+        <h2>Historial</h2>
+        <br />
+        <table class="table">
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Estacionamiento.Patente)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Estacionamiento.Entrada)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Salida)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Importe)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Usuario)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Observaciones)
+                </th>
+                <th>
+                    @Html.DisplayName("Estadia")
+                </th>
+                <th>
+                    @Html.DisplayName("Vehiculo")
+                </th>
+            </tr>
+
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Estacionamiento.Patente)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Estacionamiento.Entrada)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Salida)
+                    </td>
+                    <td>
+                        $@Html.DisplayFor(modelItem => item.Importe)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Usuario.User)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Observaciones)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Estacionamiento.TipoEstadia.Descripcion)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Estacionamiento.TipoVehiculo.Descripcion)
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+</body>
+</html>
